@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+import re 
 # Create your tests here.
 
 class RegisterTestCase(TestCase):
@@ -68,5 +69,9 @@ class RegisterTestCase(TestCase):
 
     def validate_email(email):
      pattern = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
-
+     
+     if re.match(pattern, email):
+         return True
+     else:
+         return False
  
