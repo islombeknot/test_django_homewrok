@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+    <ul>
+        <li><strong>Username:</strong> {{ request.user.username }}</li>
+        <li><strong>First Name:</strong> {{ request.user.first_name }}</li>
+        <li><strong>Last Name:</strong> {{ request.user.last_name }}</li>
+        <li><strong>Email:</strong> {{ request.user.email }}</li>
+    </ul>
+</body>
+</html>

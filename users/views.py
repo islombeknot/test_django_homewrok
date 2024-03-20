@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from django.views import View
-from .forms import RegisterForm
+from .models import Profile
+from .forms import RegisterForm, LoginForm,ProfileForm
 from django.shortcuts import redirect
 from django.http import HttpResponse,  HttpResponseBadRequest
+from django.contrib.auth import authenticate, login 
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -46,4 +50,50 @@ class RegisterView(View):
       else:
            return HttpResponseBadRequest("So'rov qabul qilinmadi.")
      
+
       return render(request, 'users/register.html',context={"form":form})
+
+class LoginView(View):
+
+     def get(self, request):
+          form = LoginForm()
+
+          return render(request, 'users/login.html',context={"form":form})
+     
+     def post(self, request):
+          form = LoginForm(request.POST)
+          if form.is_valid():
+               username = form.cleaned_data['username']
+               password = form.cleaned_data['password']
+               user = authenticate(username=username, password=password)
+               if user is not None:
+                    login(request, user)
+                    return redirect("landing")
+          return render(request, 'users/login.html',context={"form":form})
+     
+
+
+
+@login_required
+def profile_view(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        profile = None
+    
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            if profile is None:
+                profile = form.save(commit=False)
+                profile.user = request.user
+                profile.save()
+            else:
+                form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'users/profile.html', {'form': form})
+
+     
+

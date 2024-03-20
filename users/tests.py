@@ -1,7 +1,10 @@
+from .models import Profile
+from django.contrib.auth import get_user
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 import re 
+from django.contrib.auth.forms import LoginForm
 # Create your tests here.
 
 class RegisterTestCase(TestCase):
@@ -74,4 +77,119 @@ class RegisterTestCase(TestCase):
          return True
      else:
          return False
+    def test_username_already_exists(self):
+        user = User.objects.create(username="islombek", first_name="uskir", last_name="baxtiyorjonov", email="isl@gmail.com")
+        user.set_password("1234")
+        user.save()
+        response = self.client.post(
+            reverse("username:register"),
+            data={
+                "username": "islombek",
+                "first_name": "Islombek",
+                "last_name": "Baxtiyorjonov",
+                "email": "islombek@gmail.com",
+                "password": "1234"
+            }
+        )    
+
+        user_count = User.objects.count()
+        self.assertEqual(user_count, 1)
+
+        form = response.context['form']
+
+        self.assertTrue(form.errors)
+        self.assertIn("username", form.errors.keys())
+        self.assertEqual(form.errors['username'], ['A user with that username already exists.'])
+
+    def test_invalid_email(self):
+        response = self.client.post(
+            reverse("username:register"),
+            data={
+                "username": "islombek",
+                "first_name": "Islombek",
+                "last_name": "Baxtiyorjonov",
+                "email": "islombek@gmail.com",
+                "password": "1234"
+            }
+        )    
+        user_count = User.objects.count()
+
+        self.assertEqual(user_count, 0)
+        form = response.context['form']
+
+        self.assertTrue(form.errors)
+        self.assertIn("email", form.errors.keys())
+        self.assertEqual(form.errors['email'], ['Enter a valid email address.'])
+
+class LoginTestCase(TestCase):
+    def test_succel_login(self):
+        user = User.objects.create(username="islombek", first_name="uskir", last_name="baxtiyorjonov", email="isl@gmail.com")
+        user.set_password("1234")
+        user.save()
+
+
+        self.client.post(
+            reverse("users:login"),
+            data={
+            "username": "islombek",
+            "password": "1234"
+            }
+        )
+    
+
+
+        user = get_user(self.client)
+
+        self.assertTrue(user.is_authenticated)
+    
+
+    def testwrongusername(self):
+        user = User.objects.create_user(username='kimdur', password='9890')
+   
+        form_data = {"username": 'kimdur', "password": '9890'}
+        form = LoginForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('Bunday foydalanuvchi mavjud emas', form.errors['__all__'])
+
+
+    def test_wrong_password(self):
+        
+        user = User.objects.create_user(username='kimdur', password='1817')
+        
+        form_data = {"username": 'kimdur', "password": '1817'}
+        form = LoginForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('Notogri parol', form.errors['__all__'])
+
+        
+
+
+class ProfileViewTest(TestCase):
+    def setUp(self):
+      
+        self.user = User.objects.create_user(username='jhon', password='1234')
+
+    def test_profile_view(self):
+        self.client.login(username='jhon', password='1234')
+        data = {
+            'username': 'jhon',
+            'first_name': 'John',
+            'last_name': 'jhonov',
+            'email': 'john@gmail.com',
+          
+        }
+        response = self.client.post(reverse('profile'), data)
+        self.assertEqual(response.status_code, 302)
+
+     
+        profile = Profile.objects.get(user=self.user)
+        self.assertEqual(profile.first_name, 'John')
+        self.assertEqual(profile.last_name, 'jhonov')
+        self.assertEqual(profile.email, 'john@gmail.com')
+      
+
+
+
+
+
  
