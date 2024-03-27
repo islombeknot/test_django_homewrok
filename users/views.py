@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from django.views import View
+from django.contrib.auth import logout
 from .models import Profile
 from .forms import RegisterForm, LoginForm,ProfileForm
 from django.shortcuts import redirect
-from django.http import HttpResponse,  HttpResponseBadRequest
+from django.http import HttpResponse,  HttpResponseBadRequest, HttpResponseRedirect, Http404
 from django.contrib.auth import authenticate, login 
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import LoginSerializer
 
 
 
@@ -53,23 +59,39 @@ class RegisterView(View):
 
       return render(request, 'users/register.html',context={"form":form})
 
-class LoginView(View):
+# class LoginView(View):
 
-     def get(self, request):
-          form = LoginForm()
+#      def get(self, request):
+#           if request.user.is_authenticated:
+#               return HttpResponse("page not found")
+#           form = LoginForm()
 
-          return render(request, 'users/login.html',context={"form":form})
+#           return render(request, 'users/login.html',context={"form":form})
      
-     def post(self, request):
-          form = LoginForm(request.POST)
-          if form.is_valid():
-               username = form.cleaned_data['username']
-               password = form.cleaned_data['password']
-               user = authenticate(username=username, password=password)
-               if user is not None:
-                    login(request, user)
-                    return redirect("landing")
-          return render(request, 'users/login.html',context={"form":form})
+#      def post(self, request):
+#           form = LoginForm(request.POST)
+#           if form.is_valid():
+#                username = form.cleaned_data['username']
+#                password = form.cleaned_data['password']
+#                user = authenticate(username=username, password=password)
+#                if user is not None:
+#                     login(request, user)
+#                     return redirect("landing")
+#           return render(request, 'users/login.html',context={"form":form})
+
+# views.py
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })
+
      
 
 
@@ -95,5 +117,9 @@ def profile_view(request):
         form = ProfileForm(instance=profile)
     return render(request, 'users/profile.html', {'form': form})
 
-     
 
+class LogoutView(LoginRequiredMixin, View):
+  def get(self, request):
+      logout(request)
+
+      return redirect('landing')
