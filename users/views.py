@@ -79,7 +79,7 @@ class RegisterView(View):
 #                     return redirect("landing")
 #           return render(request, 'users/login.html',context={"form":form})
 
-# views.py
+
 
 class LoginAPIView(APIView):
     def post(self, request):
