@@ -2,7 +2,7 @@ from django.contrib import admin
 from . models import User, Place, PlaceOwner, PlaceComment, Owner 
 # Register your models here.
 class PlaceAdmin(admin.ModelAdmin):
-     list_display = ('id', 'name', 'description', 'adress')
+     list_display = ('id', 'name', 'description', 'adress','image')
      search_fields = ('id', 'name')
 
 admin.site.register(Place, PlaceAdmin)

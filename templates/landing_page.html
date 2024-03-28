@@ -6,10 +6,14 @@
      {% if not user.is_authinticated %}
           <a href="{%url 'users:register'%}">Register</a>
           <a href="{%url 'users:login'%}">Login</a>
+          <a href="{%url 'users:about'%}">about</a>
+          <a href="{%url 'places:places_list'%}">place</a>
      {%else%}
 
           <a href="{%url 'users:profile'%}">Profile</a>
           <a href="{%url 'users:logout'%}">logout</a>
+          <a href="{%url 'places:places_list'%}">place</a>
+          
      {%endif%}
 </p>
      

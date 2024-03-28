@@ -123,3 +123,7 @@ class LogoutView(LoginRequiredMixin, View):
       logout(request)
 
       return redirect('landing')
+  
+
+def about(request):
+    return render(request, 'users/about.html')
