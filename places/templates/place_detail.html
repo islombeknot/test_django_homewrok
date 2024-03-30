@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Place detail
+{% endblock %}
+
+{% block content %}
+    <title>Place Details</title>
+
+    <h1>{{ place.name }}</h1>
+
+    <p><strong>Description:</strong> {{ place.description }}</p>
+    <p><strong>Address:</strong> {{ place.address }}</p>
+    {% if place.image %}
+        <img style="height:200px; width:220px" src="{{ place.image.url }}" alt="{{ place.name }}">
+    {% endif %}
+    <h1 class="mb-5">Reviews</h1>
+    <hr>
+
+    {% for review in paginated_reviews %}
+        <div class="row mb-3 at-3">
+            <div class="col-1 me-12">
+                <img src="{{ review.user.profile_image.url }}" style="height:100px; width:100px" alt="salom">
+            </div>
+            <div class="col-9">
+                <p>
+                    {{ review.comment }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="row mt-5">
+        <div class="col-4">
+            <form action="{% url 'places:add_comment'%}" method="post">
+                {% csrf_token%}
+                {{form|crispy}}
+                <button type="submit" class="btn btn-success">Add comment</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if paginated_reviews.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ paginated_reviews.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ paginated_reviews.number }} of {{ paginated_reviews.paginator.num_pages }}.
+            </span>
+
+            {% if paginated_reviews.has_next %}
+                <a href="?page={{ paginated_reviews.next_page_number }}">next</a>
+                <a href="?page={{ paginated_reviews.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+{% endblock %}

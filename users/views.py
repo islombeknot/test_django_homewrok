@@ -59,38 +59,38 @@ class RegisterView(View):
 
       return render(request, 'users/register.html',context={"form":form})
 
-# class LoginView(View):
+class LoginView(View):
 
-#      def get(self, request):
-#           if request.user.is_authenticated:
-#               return HttpResponse("page not found")
-#           form = LoginForm()
+     def get(self, request):
+          if request.user.is_authenticated:
+              return HttpResponse("page not found")
+          form = LoginForm()
 
-#           return render(request, 'users/login.html',context={"form":form})
+          return render(request, 'users/login.html',context={"form":form})
      
-#      def post(self, request):
-#           form = LoginForm(request.POST)
-#           if form.is_valid():
-#                username = form.cleaned_data['username']
-#                password = form.cleaned_data['password']
-#                user = authenticate(username=username, password=password)
-#                if user is not None:
-#                     login(request, user)
-#                     return redirect("landing")
-#           return render(request, 'users/login.html',context={"form":form})
+     def post(self, request):
+          form = LoginForm(request.POST)
+          if form.is_valid():
+               username = form.cleaned_data['username']
+               password = form.cleaned_data['password']
+               user = authenticate(username=username, password=password)
+               if user is not None:
+                    login(request, user)
+                    return redirect("landing")
+          return render(request, 'users/login.html',context={"form":form})
 
 
 
-class LoginAPIView(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        })
+# class LoginAPIView(APIView):
+#     def post(self, request):
+#         serializer = LoginSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         refresh = RefreshToken.for_user(user)
+#         return Response({
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token),
+#         })
 
      
 
