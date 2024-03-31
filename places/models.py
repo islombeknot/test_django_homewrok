@@ -4,10 +4,11 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
 class Place(models.Model):
+     id = models.AutoField(primary_key=True)
      name = models.CharField(max_length=255)
      description = models.TextField(null=True, blank=True)
      adress = models.CharField(max_length=255)
-     image = models.ImageField(null=True, blank=True)
+     image = models.ImageField(upload_to='images/',null=True, blank=True)
      created_at = models.DateTimeField(default=timezone.now)
 
      def __str__(self):

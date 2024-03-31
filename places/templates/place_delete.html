@@ -1,0 +1,15 @@
+{%extends 'base.html'%}
+{%block content%}
+    <title>Delete</title>
+
+
+    <h1>Confirm Delete</h1>
+    <p>Are you sure you want to delete "{{ place.name }}"?</p>
+    <form action="{% url 'place_delete' place.pk %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete">
+    </form>
+    <a href="{% url 'place_detail' place.pk %}">Cancel</a>
+{%endblock%}
+
+

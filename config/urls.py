@@ -26,5 +26,6 @@ urlpatterns = [
     path('home', views.Homeview.as_view(), name='home'),
     path('users/', include('users.urls',namespace='users')),
     path('places/', include('places.urls',namespace='places')),
+    path('api/', include('api.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

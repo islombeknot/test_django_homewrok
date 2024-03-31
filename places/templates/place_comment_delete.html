@@ -1,0 +1,12 @@
+{%extends 'base.html'%}
+{%block content%}
+<body>
+    <h1>Confirm Delete Comment</h1>
+    <p>Are you sure you want to delete this comment?</p>
+    <form action="{% url 'place_comment_delete' comment.pk %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete">
+    </form>
+    <a href="{% url 'place_comment_detail' comment.pk %}">Cancel</a>
+
+{%endblock%}
