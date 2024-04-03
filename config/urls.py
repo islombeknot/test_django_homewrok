@@ -19,6 +19,12 @@ from django.urls import path,include
 from . import views 
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from places.views import PlaceCommentViewSet
+# from .views import PlaceListView, PlaceDetailView, AddCommentView
+
+router = DefaultRouter()
+router.register(r'placecomments', PlaceCommentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +33,6 @@ urlpatterns = [
     path('users/', include('users.urls',namespace='users')),
     path('places/', include('places.urls',namespace='places')),
     path('api/', include('api.urls')),
+    path('api/', include(router.urls)),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

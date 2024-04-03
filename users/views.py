@@ -127,3 +127,6 @@ class LogoutView(LoginRequiredMixin, View):
 
 def about(request):
     return render(request, 'users/about.html')
+
+
+

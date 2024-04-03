@@ -1,6 +1,7 @@
-from django.urls import path
+from django.urls import path, include 
 from . import views
-# from .views import PlaceListView, PlaceDetailView, AddCommentView
+
+
 
 app_name = 'places'
 
@@ -14,5 +15,6 @@ urlpatterns = [
     path('place/create/', views.place_create, name='place_create'),
     path('place/<int:pk>/update/', views.place_update, name='place_update'),
     path('place/<int:pk>/delete/', views.place_delete, name='place_delete'),
-]
+   
 
+]

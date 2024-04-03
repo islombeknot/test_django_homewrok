@@ -19,4 +19,6 @@ class LoginSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError("username va password kiritilishi shart ")
 
-        return data
+        return data 
+
+

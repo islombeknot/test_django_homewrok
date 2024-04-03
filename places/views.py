@@ -1,3 +1,6 @@
+from rest_framework import viewsets
+from .models import PlaceComment
+from .serializers import PlaceCommentSerializer
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Place
 from .forms import PlaceForm
@@ -181,3 +184,8 @@ def place_comment_delete(request, pk):
         return redirect('place_list')
     return render(request, 'place_comment_delete.html', {'comment': comment})
 
+
+
+class PlaceCommentViewSet(viewsets.ModelViewSet):
+    queryset = PlaceComment.objects.all()
+    serializer_class = PlaceCommentSerializer
